@@ -1,0 +1,16 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+div {
+  padding-top: 12px;
+}
+
+.Gbp {
+  color: green;
+}
+
+.Time {
+  color: blue;
+}
