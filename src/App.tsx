@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { getPricesQO, Time, Bpi, BpiData, getGbpQO, getTimeQO } from "./api";
+import { getPricesQO, getGbpQO, getTimeQO } from "./api";
 import "./styles.css";
 
 /**
