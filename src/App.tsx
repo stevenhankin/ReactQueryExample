@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { getPricesQO, Time, Bpi } from "./api";
+import { getPricesQO, Time, Bpi, BpiData, getGbpQO, getTimeQO } from "./api";
 import "./styles.css";
 
 /**
@@ -8,13 +8,14 @@ import "./styles.css";
  */
 const GbpView = () => {
   const [runQuery, setRunQuery] = useState(false);
-  const [bpi, SetBPI] = useState<Bpi>();
   /**
    * Enabled flag will be used to control when the query happens
    * Note: Since the query is shared, it will delay all 3 components
    * that are waiting on the data!
    */
-  const btcQuery = useQuery(getPricesQO({ enabled: runQuery }));
+  const btcQuery = useQuery(
+    getGbpQO({ enabled: runQuery })
+  );
   /**
    * Artifically delaying the React Query by 3 seconds
    * to illustrate how to enable/disable the query
@@ -22,20 +23,13 @@ const GbpView = () => {
   useEffect(() => {
     setTimeout(() => setRunQuery(true), 3000);
   }, []);
-  /**
-   * Extract price data
-   */
-  useEffect(() => {
-    if (btcQuery.isSuccess) {
-      SetBPI(btcQuery.data.bpi);
-    }
-  }, [btcQuery]);
+
   return (
     <div className="Gbp">
       <hr />
-      <div>Code: {bpi?.GBP.code || "🤔"}</div>
-      <div>Description: {bpi?.GBP.description || "🤔"}</div>
-      <div>Rate: {bpi?.GBP.rate || "🤔"}</div>
+      <div>Code: {btcQuery.data?.code || "🤔"}</div>
+      <div>Description: {btcQuery.data?.description || "🤔"}</div>
+      <div>Rate: {btcQuery.data?.rate || "🤔"}</div>
     </div>
   );
 };
@@ -44,20 +38,11 @@ const GbpView = () => {
  * Time info for Spot Price
  */
 const TimeView = () => {
-  const btcQuery = useQuery(getPricesQO());
-  const [time, setTime] = useState<Time>();
-  /**
-   * Extract time data
-   */
-  useEffect(() => {
-    if (btcQuery.isSuccess) {
-      setTime(btcQuery.data.time);
-    }
-  }, [btcQuery]);
+  const btcQuery = useQuery(getTimeQO());
   return (
     <div className="Time">
       <hr />
-      <div>{time ? time.updated : "No time data"}</div>
+      <div>{btcQuery.data ? btcQuery.data.updated : "No time data"}</div>
     </div>
   );
 };
@@ -73,6 +58,7 @@ const App = () => {
   return (
     <div className="App">
       <h2>Bitcoin Price Index</h2>
+      <h4>with artificial delay</h4>
       <div>API Status: {btcQuery.status}</div>
       <GbpView />
       <TimeView />

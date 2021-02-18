@@ -54,8 +54,34 @@ export const getPrices = async (): Promise<BpiData> =>
  */
 export const getPricesQO = (params?: {
   enabled: boolean;
-}): QueryObserverOptions<BpiData, Error> => ({
+}): QueryObserverOptions<BpiData> => ({
   queryKey: "currentPrices",
   queryFn: getPrices,
-  enabled: params?.enabled === true
+  enabled: params?.enabled === true,
+});
+
+const pricesDefaults = (enabled?: boolean) => ({
+  queryKey: "currentPrices",
+  queryFn: getPrices,
+  enabled: !!enabled,
+});
+
+/**
+ * Selects only GBP from Query
+ */
+export const getGbpQO = (params?: {
+  enabled?: boolean;
+}): QueryObserverOptions<BpiData, unknown, GBP> => ({
+  ...pricesDefaults(params?.enabled),
+  select: (_) => _.bpi.GBP,
+});
+
+/**
+ * Selects only Time from Query
+ */
+export const getTimeQO = (params?: {
+  enabled?: boolean;
+}): QueryObserverOptions<BpiData, unknown, Time> => ({
+  ...pricesDefaults(params?.enabled),
+  select: (_) => _.time,
 });
